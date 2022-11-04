@@ -13,7 +13,6 @@ public class Main extends PApplet {
     int margins = 10;
     int target = 75;
     private ArrayList<Block> arrL;
-    private ArrayList<Integer> test;
 
     public Main(){ // need to inatiate the variable in thsi consturcter
         pApplet = this;
@@ -27,25 +26,22 @@ public class Main extends PApplet {
         // teh first bit is teh spaces inbetween and on outside of teh blocks
         int widthC = ((listSize+1)*margins)+(listSize)*blockSize;
         int heightC = blockSize + (margins*2);
-        size(widthC, heightC); // setting up a canvas
+        size(widthC+200, heightC+200); // setting up a canvas
     }
 
     public void setup() { // TO DO; CREATE IMST FOR TEH X AND Y VALES
 
         arrL = new ArrayList<>();
-        test = new ArrayList<>();
 
         int baseColor = 0;
-        for(int i =0; i < listSize; i++){
+        for(int i =0; i < 2; i++){
             int xVal = (blockSize+margins)*i + margins;
             int yVal = margins;
-            arrL.add(i, new Block(xVal, yVal, blockSize, baseColor)); // this list will be sorted 0,1,2,3, etc.
-            test.add(i,baseColor);
-            baseColor = baseColor +25;
+            arrL.add(new Block(xVal, yVal, blockSize, baseColor)); // this list will be sorted 0,1,2,3, etc.
+            baseColor = baseColor +125;
         }
 
-        System.out.println(binarySearch(target));
-        System.out.println(test);
+        //System.out.println(binarySearch(target));
 
     }
 
@@ -74,7 +70,6 @@ public class Main extends PApplet {
             }else{ // if the center value is higher than tagret --> move down and get rid of top half
                 top = center -1;
             }
-            System.out.println(arrL);
         }
 
         return -1;
