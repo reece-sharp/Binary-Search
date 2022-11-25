@@ -10,8 +10,8 @@ public class Block{
     }
 
     public void display(){
+        Main.app.fill(baseColor);
         Main.app.rect(x, y, size, size);
-        Main.app.fill(baseColor,150,255);
     }
 
     public int getBC(){

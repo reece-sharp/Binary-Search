@@ -5,13 +5,12 @@ import java.util.ArrayList;
 public class Main extends PApplet {
     public static PApplet pApplet;
     public static PApplet app;
-    int listSize = 10;
+    int listSize = 15;
 
-    static int  greenV = 150;
-    static int blueV = 255;
-    int blockSize = 30;
+    int blockSize = 50;
     int margins = 10;
-    int target = 75;
+    int grayTarget = 75;
+    int factor = 255/listSize; // this is teh value that each blcok will increase by
     private ArrayList<Block> arrL;
 
     public Main(){ // need to inatiate the variable in thsi consturcter
@@ -26,19 +25,20 @@ public class Main extends PApplet {
         // teh first bit is teh spaces inbetween and on outside of teh blocks
         int widthC = ((listSize+1)*margins)+(listSize)*blockSize;
         int heightC = blockSize + (margins*2);
-        size(widthC+200, heightC+200); // setting up a canvas
+        size(widthC, heightC+(blockSize*2)); // setting up a canvas
     }
 
     public void setup() { // TO DO; CREATE IMST FOR TEH X AND Y VALES
+        background(grayTarget);
 
         arrL = new ArrayList<>();
 
         int baseColor = 0;
-        for(int i =0; i < 2; i++){
+        for(int i =0; i < listSize; i++){
             int xVal = (blockSize+margins)*i + margins;
             int yVal = margins;
             arrL.add(new Block(xVal, yVal, blockSize, baseColor)); // this list will be sorted 0,1,2,3, etc.
-            baseColor = baseColor +125;
+            baseColor = baseColor +factor;
         }
 
         //System.out.println(binarySearch(target));
@@ -46,14 +46,14 @@ public class Main extends PApplet {
     }
 
     public void draw() { // has all teh panle objects in it
-        background(target,greenV,blueV);// teh bakgroudn charcter is dependnetd on teh target color
+
         for(int i = 0; i<arrL.size();i++){
             Block b = arrL.get(i);
             b.display();
         }
     }
 
-    private int binarySearch(int target){
+    private int binarySearch(int gTarget){
         int bottom = 0;
         int top = arrL.size()-1;
 
@@ -63,18 +63,21 @@ public class Main extends PApplet {
             int cenV = arrL.get(center).getBC(); // teh color value of teh center block
 
 
-            if(cenV == target){
+            if(cenV == gTarget){
+                text(center, width/2, height/2);
                 return center;
-            }else if (cenV < target){ // move up
+            }else if (cenV < gTarget){ // move up
                 bottom = center +1;
             }else{ // if the center value is higher than tagret --> move down and get rid of top half
                 top = center -1;
             }
         }
 
+        text("this value was not found", width/2, height/2);
         return -1;
     }
 
     public void keyPressed(){
+        binarySearch(grayTarget);
     }
 }
