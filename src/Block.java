@@ -9,9 +9,11 @@ public class Block{
         baseColor = _baseColor; // the changing color
     }
 
-    public void display(){
+    public void display(int r, int g, int b){
+        Main.app.stroke(r,g,b);
         Main.app.fill(baseColor);
         Main.app.rect(x, y, size, size);
+
     }
 
     public int getBC(){
