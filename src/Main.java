@@ -14,6 +14,8 @@ public class Main extends PApplet {
 
     int PAbottom = 0;
     int PAtop = listSize -1;
+
+    boolean infoShow = false; //whether it shows the infomaton on how to play the "game"
     private ArrayList<Block> arrL;
 
     public Main(){ // need to inatiate the variable in thsi consturcter
@@ -27,8 +29,8 @@ public class Main extends PApplet {
     public void settings(){
         // teh first bit is teh spaces inbetween and on outside of teh blocks
         int widthC = ((listSize+1)*margins)+(listSize)*blockSize;
-        int heightC = blockSize + (margins*2);
-        size(widthC, heightC+(blockSize*2)); // setting up a canvas
+        int heightC = blockSize + (margins*4); // the height of the block all teh way to where the text would appear
+        size(widthC, heightC+150); // setting up a canvas
     }
 
     public void setup() { // TO DO; CREATE IMST FOR TEH X AND Y VALES
@@ -52,7 +54,17 @@ public class Main extends PApplet {
 
     }
 
-    public void draw(){}
+    public void draw(){
+        // creating info button
+        fill(255,195,0);
+        rect(width-(margins*4), height-(margins*4),20,20);
+        if(infoShow) {
+            fill(255);
+            text("infomation",width/2,(height/2) +50);
+            // ADD HOW TO PLAY TEH GAME
+            // FIX ERROWRS WITH THE TEXT AND HOW IT SHOWS UP
+        }
+    }
 
     private int binarySearch(int gTarget){
         int bottom = PAbottom;
@@ -63,12 +75,12 @@ public class Main extends PApplet {
             int center = (bottom+top)/2;
             int cenV = arrL.get(center).getBC(); // teh color value of teh center block
 
-            arrL.get(center).display(255,195,0); // a yellow stroke color
+           // arrL.get(center).display(255,195,0); // a yellow stroke color
             // ISSUE. THE CORRECT INDEX IS NOT SHPOWING UP BUT
             // WHEN I GET RID OF TEH ABOVE LINE TEH INDEX DOES SHOW UP
 
             if(cenV == gTarget){
-                text(center, width/2, height/2);
+                text(center, width/2, blockSize+(margins*4));
                 return center;
             }else if (cenV < gTarget){ // move up
                 bottom = center +1;
@@ -87,5 +99,10 @@ public class Main extends PApplet {
 
     public void keyPressed(){
         binarySearch(grayTarget);
+    }
+    public void mouseClicked(){
+        if(mouseX>width-(margins*4) && mouseX<width-(margins*4)+20 && mouseY > height-(margins*4) && mouseY< height-(margins*4)+20){
+            infoShow = ! infoShow;
+        }
     }
 }
