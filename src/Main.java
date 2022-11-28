@@ -5,17 +5,20 @@ import java.util.ArrayList;
 public class Main extends PApplet {
     public static PApplet pApplet;
     public static PApplet app;
-    int listSize = 10;
+    int listSize = 50;
 
-    int blockSize = 50;
+    int blockSize = 10;
     int margins = 10;
-    int grayTarget = 75; // MAKE THIS USER INPUT
+    int grayTarget = 100; // MAKE THIS USER INPUT
     int factor = 255/listSize; // this is teh value that each blcok will increase by
 
     int PAbottom = 0;
     int PAtop = listSize -1;
 
     boolean infoShow = false; //whether it shows the infomaton on how to play the "game"
+    boolean found = false;
+    boolean endOfBS = false;
+    int foundIndex;
     private ArrayList<Block> arrL;
 
     public Main(){ // need to inatiate the variable in thsi consturcter
@@ -54,7 +57,9 @@ public class Main extends PApplet {
         for(int i = 0; i<arrL.size();i++){
             Block b = arrL.get(i);
             b.display(0,0,0); //  normally a black stroke color
+            System.out.println(b.getBC());
         }
+        System.out.println();
 
     }
 
@@ -76,7 +81,6 @@ public class Main extends PApplet {
         int top = PAtop;
 
         if (bottom <=top){
-
             int center = (bottom+top)/2;
             int cenV = arrL.get(center).getBC(); // teh color value of teh center block
 
@@ -85,7 +89,8 @@ public class Main extends PApplet {
             // WHEN I GET RID OF TEH ABOVE LINE TEH INDEX DOES SHOW UP
 
             if(cenV == gTarget){
-                text(center, width/2, blockSize+(margins*4));
+                found = true;
+                foundIndex = center;
                 return center;
             }else if (cenV < gTarget){ // move up
                 bottom = center +1;
@@ -95,26 +100,40 @@ public class Main extends PApplet {
                 PAtop = top;
             }
         }
-
-
-
-       // text("this value was not found", width/2, height/2);
+        if(top < bottom){
+            endOfBS = true;
+        }
         return -1;
     }
 
     private void selectionSort(ArrayList<Block> arrL){
 // THIS DOES NOT WORK ON FIRST CALL
-        for(int i= 0; i< arrL.size()-2;i++){ // -2 b/c teh last value does not need to be sorted
+        for(int i= 0; i< arrL.size()-1;i++){ // -2 b/c teh last value does not need to be sorted
             int minI = i; // finding the minumum index
-            for(int j = i+1; j<arrL.size()-1;j++){
-                if(arrL.get(j).getBC() < arrL.get(i).getBC()){ // comparing the BC value of J to teh BC value of I
+
+            int comp = i; // valeu ur comapring to
+            for(int j = i+1; j<arrL.size();j++){
+                if(arrL.get(j).getBC() < arrL.get(comp).getBC()){ // comparing the BC value of J to teh BC value of I
                     minI = j;
+                    comp =j;
                 }
             }
+
+            int XofI = arrL.get(i).getX();
+            int XofM = arrL.get(minI).getX();
+            arrL.get(i).setX(XofM);
+            arrL.get(minI).setX(XofI);
             // switch min with element at i
             Block tempMI = arrL.get(minI); // saving value at minumnet
             arrL.set(minI,arrL.get(i)); // setting cvaley at minI to teh element value at i
             arrL.set(i,tempMI); // setting teh value at i index to the minumnet element value
+
+            for(int l = 0; l<arrL.size();l++) {
+                Block b = arrL.get(l);
+                b.display(0, 0, 0); //  normally a black stroke color
+            }
+
+
 
         }
     }
@@ -123,20 +142,26 @@ public class Main extends PApplet {
     public void keyPressed(){
         if(key =='b'){
             binarySearch(grayTarget);
+            if(endOfBS){
+                if(found){
+                    fill(255);
+                    text(foundIndex,width/2, height/2);
+                }else{
+                    fill(255);
+                    text("this value was not found", width/2, height/2);
+                }
+            }
         }
-        else if(key =='s'){ // AT THIS POINT YOU HAVE TO CLICK S MANY TIMES UNTIL IT DOESNT CHANGE ANYMORE
+
+        if(key =='s'){ // AT THIS POINT YOU HAVE TO CLICK S MANY TIMES UNTIL IT DOESNT CHANGE ANYMORE
             selectionSort(arrL);
-            //updating canvas
-            for(int i=0;i<arrL.size()-1;i++){
-                arrL.get(i).setX((blockSize+margins)*i + margins);
-            }
-
-            for(int i = 0; i<arrL.size();i++){
+            for(int i = 0; i<arrL.size();i++) {
                 Block b = arrL.get(i);
-                b.display(0,0,0); //  normally a black stroke color
+                System.out.println(b.getBC());
+                System.out.println("x:" + b.getX());
             }
-
         }
+
     }
     public void mouseClicked(){
         if(mouseX>width-(margins*4) && mouseX<width-(margins*4)+20 && mouseY > height-(margins*4) && mouseY< height-(margins*4)+20){
