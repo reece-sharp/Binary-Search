@@ -85,8 +85,6 @@ public class Main extends PApplet {
             int cenV = arrL.get(center).getBC(); // teh color value of teh center block
 
             arrL.get(center).display(255,195,0); // a yellow stroke color
-            // ISSUE. THE CORRECT INDEX IS NOT SHPOWING UP BUT
-            // WHEN I GET RID OF TEH ABOVE LINE TEH INDEX DOES SHOW UP
 
             if(cenV == gTarget){
                 found = true;
@@ -107,7 +105,7 @@ public class Main extends PApplet {
     }
 
     private void selectionSort(ArrayList<Block> arrL){
-// THIS DOES NOT WORK ON FIRST CALL
+
         for(int i= 0; i< arrL.size()-1;i++){ // -2 b/c teh last value does not need to be sorted
             int minI = i; // finding the minumum index
 
@@ -143,6 +141,7 @@ public class Main extends PApplet {
         if(key =='b'){
             binarySearch(grayTarget);
             if(endOfBS){
+//ITS NOT PRINTING HWNE THE ANSWER IS THERE
                 if(found){
                     fill(255);
                     text(foundIndex,width/2, height/2);
@@ -157,8 +156,8 @@ public class Main extends PApplet {
             selectionSort(arrL);
             for(int i = 0; i<arrL.size();i++) {
                 Block b = arrL.get(i);
-                System.out.println(b.getBC());
-                System.out.println("x:" + b.getX());
+                //System.out.println(b.getBC());
+                //System.out.println("x:" + b.getX());
             }
         }
 
