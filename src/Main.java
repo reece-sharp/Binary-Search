@@ -9,11 +9,12 @@ public class Main extends PApplet {
 
     int blockSize = 10;
     int margins = 10;
-    int grayTarget = 100; // MAKE THIS USER INPUT
+    int grayTarget = 105; // MAKE THIS USER INPUT
     int factor = 255/listSize; // this is teh value that each blcok will increase by
 
     int PAbottom = 0;
     int PAtop = listSize -1;
+    String digits = "";
 
     boolean infoShow = false; //whether it shows the infomaton on how to play the "game"
     boolean found = false;
@@ -37,7 +38,6 @@ public class Main extends PApplet {
     }
 
     public void setup() { // TO DO; CREATE IMST FOR TEH X AND Y VALES
-        background(grayTarget);
         arrL = new ArrayList<>();
 
         //int baseColor = 0;
@@ -53,16 +53,30 @@ public class Main extends PApplet {
 
 
     // thie below used to be in draw but i moved to setup so teh colro change wodul work
-        for(int i = 0; i<arrL.size();i++){
-            Block b = arrL.get(i);
-            b.display(0,0,0); //  normally a black stroke color
-            System.out.println(b.getBC());
-        }
-        System.out.println();
 
     }
 
     public void draw(){
+        background(grayTarget);
+        for(int i = 0; i<arrL.size();i++){
+            Block b = arrL.get(i);
+            b.display(); //  normally a black stroke color
+            //System.out.println(b.getBC());
+        }
+        if(endOfBS){
+//ITS NOT PRINTING HWNE THE ANSWER IS THERE
+            if(found){
+                fill(255);
+                text(foundIndex,width/2, height/2);
+            }else{
+                fill(255);
+                text("this value was not found", width/2, height/2);
+            }
+        }
+
+
+
+
         // creating info button
         fill(255,195,0);
         rect(width-(margins*4), height-(margins*4),20,20);
@@ -83,7 +97,7 @@ public class Main extends PApplet {
             int center = (bottom+top)/2;
             int cenV = arrL.get(center).getBC(); // teh color value of teh center block
 
-            arrL.get(center).display(255,195,0); // a yellow stroke color
+            arrL.get(center).wasComp(true); // a yellow stroke color
 
             if(cenV == gTarget){
                 found = true;
@@ -126,11 +140,6 @@ public class Main extends PApplet {
             arrL.set(minI,arrL.get(i)); // setting cvaley at minI to teh element value at i
             arrL.set(i,tempMI); // setting teh value at i index to the minumnet element value
 
-            for(int l = 0; l<arrL.size();l++) {
-                Block b = arrL.get(l);
-                b.display(0, 0, 0); //  normally a black stroke color
-            }
-
 
 
         }
@@ -140,16 +149,20 @@ public class Main extends PApplet {
     public void keyPressed(){
         if(key =='b'){ // start seraching
             binarySearch(grayTarget);
-            if(endOfBS){
-//ITS NOT PRINTING HWNE THE ANSWER IS THERE
-                if(found){
-                    fill(255);
-                    text(foundIndex,width/2, height/2);
-                }else{
-                    fill(255);
-                    text("this value was not found", width/2, height/2);
-                }
+
+        }
+
+        if(key == 'r'){ // reseting
+            found = false;
+            endOfBS = false;
+            for(int i = 0; i<arrL.size();i++){
+                Block b = arrL.get(i);
+                b.wasComp(false); //  normally a black stroke color
+                //System.out.println(b.getBC());
             }
+
+            //TO DO MAKE IT SO BINARY SERACH STARST AGAIAN AND MAKE EBVERYTHING STARTS FORM TEH BEGINING
+
         }
 
         if(key =='s'){ // AT THIS POINT YOU HAVE TO CLICK S MANY TIMES UNTIL IT DOESNT CHANGE ANYMORE
@@ -160,7 +173,6 @@ public class Main extends PApplet {
                 //System.out.println("x:" + b.getX());
             }
         }
-        String digits = "";
         if(Character.isDigit((key))){
             digits = digits + key;
         }else if (key =='x'){
