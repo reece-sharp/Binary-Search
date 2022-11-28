@@ -35,16 +35,20 @@ public class Main extends PApplet {
 
     public void setup() { // TO DO; CREATE IMST FOR TEH X AND Y VALES
         background(grayTarget);
-
         arrL = new ArrayList<>();
 
-        int baseColor = 0;
+
+        //int baseColor = 0;
         for(int i =0; i < listSize; i++){
+            // random number from 0 to 250 but in intervals of 10
+            int r = (int)(Math.random()*25);
+
             int xVal = (blockSize+margins)*i + margins;
             int yVal = margins;
-            arrL.add(new Block(xVal, yVal, blockSize, baseColor)); // this list will be sorted 0,1,2,3, etc.
-            baseColor = baseColor +factor;
+            arrL.add(new Block(xVal, yVal, blockSize, r*10)); // this list will be sorted 0,1,2,3, etc.
+            //baseColor = baseColor +factor;
         }
+
 
     // thie below used to be in draw but i moved to setup so teh colro change wodul work
         for(int i = 0; i<arrL.size();i++){
@@ -99,6 +103,7 @@ public class Main extends PApplet {
     }
 
     private void selectionSort(ArrayList<Block> arrL){
+// THIS DOES NOT WORK ON FIRST CALL
         for(int i= 0; i< arrL.size()-2;i++){ // -2 b/c teh last value does not need to be sorted
             int minI = i; // finding the minumum index
             for(int j = i+1; j<arrL.size()-1;j++){
@@ -116,7 +121,22 @@ public class Main extends PApplet {
 
 
     public void keyPressed(){
-        binarySearch(grayTarget);
+        if(key =='b'){
+            binarySearch(grayTarget);
+        }
+        else if(key =='s'){ // AT THIS POINT YOU HAVE TO CLICK S MANY TIMES UNTIL IT DOESNT CHANGE ANYMORE
+            selectionSort(arrL);
+            //updating canvas
+            for(int i=0;i<arrL.size()-1;i++){
+                arrL.get(i).setX((blockSize+margins)*i + margins);
+            }
+
+            for(int i = 0; i<arrL.size();i++){
+                Block b = arrL.get(i);
+                b.display(0,0,0); //  normally a black stroke color
+            }
+
+        }
     }
     public void mouseClicked(){
         if(mouseX>width-(margins*4) && mouseX<width-(margins*4)+20 && mouseY > height-(margins*4) && mouseY< height-(margins*4)+20){
