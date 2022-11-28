@@ -64,6 +64,7 @@ public class Main extends PApplet {
             // ADD HOW TO PLAY TEH GAME
             // FIX ERROWRS WITH THE TEXT AND HOW IT SHOWS UP
         }
+        //I DON'T KNOW HOW TO GET THIS TO GO AWAY
     }
 
     private int binarySearch(int gTarget){
@@ -75,7 +76,7 @@ public class Main extends PApplet {
             int center = (bottom+top)/2;
             int cenV = arrL.get(center).getBC(); // teh color value of teh center block
 
-           // arrL.get(center).display(255,195,0); // a yellow stroke color
+            arrL.get(center).display(255,195,0); // a yellow stroke color
             // ISSUE. THE CORRECT INDEX IS NOT SHPOWING UP BUT
             // WHEN I GET RID OF TEH ABOVE LINE TEH INDEX DOES SHOW UP
 
@@ -96,6 +97,23 @@ public class Main extends PApplet {
        // text("this value was not found", width/2, height/2);
         return -1;
     }
+
+    private void selectionSort(ArrayList<Block> arrL){
+        for(int i= 0; i< arrL.size()-2;i++){ // -2 b/c teh last value does not need to be sorted
+            int minI = i; // finding the minumum index
+            for(int j = i+1; j<arrL.size()-1;j++){
+                if(arrL.get(j).getBC() < arrL.get(i).getBC()){ // comparing the BC value of J to teh BC value of I
+                    minI = j;
+                }
+            }
+            // switch min with element at i
+            Block tempMI = arrL.get(minI); // saving value at minumnet
+            arrL.set(minI,arrL.get(i)); // setting cvaley at minI to teh element value at i
+            arrL.set(i,tempMI); // setting teh value at i index to the minumnet element value
+
+        }
+    }
+
 
     public void keyPressed(){
         binarySearch(grayTarget);
