@@ -40,7 +40,6 @@ public class Main extends PApplet {
         background(grayTarget);
         arrL = new ArrayList<>();
 
-
         //int baseColor = 0;
         for(int i =0; i < listSize; i++){
             // random number from 0 to 250 but in intervals of 10
@@ -88,6 +87,7 @@ public class Main extends PApplet {
 
             if(cenV == gTarget){
                 found = true;
+                endOfBS = true;
                 foundIndex = center;
                 return center;
             }else if (cenV < gTarget){ // move up
@@ -138,7 +138,7 @@ public class Main extends PApplet {
 
 
     public void keyPressed(){
-        if(key =='b'){
+        if(key =='b'){ // start seraching
             binarySearch(grayTarget);
             if(endOfBS){
 //ITS NOT PRINTING HWNE THE ANSWER IS THERE
@@ -159,6 +159,13 @@ public class Main extends PApplet {
                 //System.out.println(b.getBC());
                 //System.out.println("x:" + b.getX());
             }
+        }
+        String digits = "";
+        if(Character.isDigit((key))){
+            digits = digits + key;
+        }else if (key =='x'){
+            grayTarget = Integer.parseInt(digits);
+            digits ="";
         }
 
     }
