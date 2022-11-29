@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class Main extends PApplet {
     public static PApplet pApplet;
     public static PApplet app;
-    int listSize = 50;
+    int listSize = 15;
 
-    int blockSize = 10;
+    int blockSize = 20;
     int margins = 10;
     int grayTarget = 100; // MAKE THIS USER INPUT
     int factor = 255/listSize; // this is teh value that each blcok will increase by
@@ -17,6 +17,10 @@ public class Main extends PApplet {
     String digits = "";
 
     boolean infoShow = false; //whether it shows the infomaton on how to play the "game"
+    String info = "the background color is your target"+'\n'+
+            "press 's' to sort the cells; press 'b' to search the cells"+'\n'+
+            "if you want to restart, press 'r'"+'\n'+
+            "if you want a new target, type the number (0-255) and press 'x'";
     boolean found = false;
     boolean endOfBS = false;
     int foundIndex;
@@ -64,25 +68,30 @@ public class Main extends PApplet {
             //System.out.println(b.getBC());
         }
         if(endOfBS){
-//ITS NOT PRINTING HWNE THE ANSWER IS THERE
-            if(found){
+            if(grayTarget<130){
                 fill(255);
-                text(foundIndex,width/2, height/2);
             }else{
-                fill(255);
-                text("this value was not found", width/2, height/2);
+                fill(0);
+            }
+            textAlign(CENTER);
+            if(found){
+                text(foundIndex,width/2, blockSize + (margins*2) +10);
+            }else{
+                text("this value was not found", width/2, blockSize + (margins*2) +10);
             }
         }
-
-
-
 
         // creating info button
         fill(255,195,0);
         rect(width-(margins*4), height-(margins*4),20,20);
         if(infoShow) {
-            fill(255);
-            text("infomation",width/2,(height/2) +50);
+            if(grayTarget<130){
+                fill(255);
+            }else{
+                fill(0);
+            }
+            textAlign(CENTER);
+            text(info,width/2,(height/2) +10);
             // ADD HOW TO PLAY TEH GAME
             // FIX ERROWRS WITH THE TEXT AND HOW IT SHOWS UP
         }
