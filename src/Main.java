@@ -9,7 +9,7 @@ public class Main extends PApplet {
 
     int blockSize = 10;
     int margins = 10;
-    int grayTarget = 105; // MAKE THIS USER INPUT
+    int grayTarget = 100; // MAKE THIS USER INPUT
     int factor = 255/listSize; // this is teh value that each blcok will increase by
 
     int PAbottom = 0;
@@ -160,12 +160,14 @@ public class Main extends PApplet {
                 b.wasComp(false); //  normally a black stroke color
                 //System.out.println(b.getBC());
             }
+            // restarst binary serach
+            PAbottom = 0;
+            PAtop = listSize -1;
 
-            //TO DO MAKE IT SO BINARY SERACH STARST AGAIAN AND MAKE EBVERYTHING STARTS FORM TEH BEGINING
 
         }
 
-        if(key =='s'){ // AT THIS POINT YOU HAVE TO CLICK S MANY TIMES UNTIL IT DOESNT CHANGE ANYMORE
+        if(key =='s'){
             selectionSort(arrL);
             for(int i = 0; i<arrL.size();i++) {
                 Block b = arrL.get(i);
