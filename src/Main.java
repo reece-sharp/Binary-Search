@@ -1,13 +1,15 @@
 import processing.core.PApplet;
-
 import java.util.ArrayList;
+import processing.data.Table;
+import processing.data.TableRow;
+
 
 public class Main extends PApplet {
     public static PApplet pApplet;
     public static PApplet app;
-    int listSize = 15;
+    int listSize = 13;
 
-    int blockSize = 20;
+    int blockSize = 50;
     int margins = 10;
     int grayTarget = 100; // MAKE THIS USER INPUT
     int factor = 255/listSize; // this is teh value that each blcok will increase by
@@ -15,6 +17,7 @@ public class Main extends PApplet {
     int PAbottom = 0;
     int PAtop = listSize -1;
     String digits = "";
+    boolean usingDataTable = false;
 
     boolean infoShow = false; //whether it shows the infomaton on how to play the "game"
     String info = "the background color is your target"+'\n'+
@@ -44,21 +47,40 @@ public class Main extends PApplet {
     public void setup() { // TO DO; CREATE IMST FOR TEH X AND Y VALES
         arrL = new ArrayList<>();
 
-        //int baseColor = 0;
-        for(int i =0; i < listSize; i++){
-            // random number from 0 to 250 but in intervals of 10
-            int r = (int)(Math.random()*25);
-
-            int xVal = (blockSize+margins)*i + margins;
-            int yVal = margins;
-            arrL.add(new Block(xVal, yVal, blockSize, r*10)); // this list will be sorted 0,1,2,3, etc.
-            //baseColor = baseColor +factor;
+/**
+ * this beloe is data takes from statistics for how many indi books store there are per year in US
+ */
+        Table table = loadTable("bookData.csv", "header");
+        int index = 0;
+        int xVal;
+        int yVal;
+        usingDataTable = true;
+        for (TableRow row : table.rows()) {
+            xVal = (blockSize+margins)*index + margins;
+            yVal = margins;
+            int year = row.getInt("year"); // obtain year data
+            int books = row.getInt("books"); // obtain quantity
+            arrL.add(new Block(xVal, yVal, blockSize,(year%100)*10, books));
+            index ++;
         }
 
 
-    // thie below used to be in draw but i moved to setup so teh colro change wodul work
 
+/**
+ * THIS BELOW IS MY RANDOM GENERATED LIST OF BLOCKS
+ *//*
+        for(int i =0; i < listSize; i++){
+            // random number from 0 to 250 but in intervals of 10
+            int r = (int)(Math.random()*25);
+            int xVal = (blockSize+margins)*i + margins;
+            int yVal = margins;
+            usingDataTable = false;
+            arrL.add(new Block(xVal, yVal, blockSize, r*10,i)); // this list will be sorted 0,1,2,3, etc.
+            //baseColor = baseColor +factor;
+        }
+*/
     }
+
 
     public void draw(){
         background(grayTarget);
@@ -73,6 +95,8 @@ public class Main extends PApplet {
             }else{
                 fill(0);
             }
+
+
             textAlign(CENTER);
             if(found){
                 text(foundIndex,width/2, blockSize + (margins*2) +10);
@@ -84,6 +108,8 @@ public class Main extends PApplet {
         // creating info button
         fill(255,195,0);
         rect(width-(margins*4), height-(margins*4),20,20);
+
+        
         if(infoShow) {
             if(grayTarget<130){
                 fill(255);
@@ -111,8 +137,10 @@ public class Main extends PApplet {
             if(cenV == gTarget){
                 found = true;
                 endOfBS = true;
-                foundIndex = center;
-                return center;
+                foundIndex = arrL.get(center).getRV();
+                //System.out.println(arrL.get(center).getRV());
+                //System.out.println(center);
+                return arrL.get(center).getRV();
             }else if (cenV < gTarget){ // move up
                 bottom = center +1;
                 PAbottom = bottom;
@@ -135,30 +163,37 @@ public class Main extends PApplet {
             int comp = i; // valeu ur comapring to
             for(int j = i+1; j<arrL.size();j++){
                 if(arrL.get(j).getBC() < arrL.get(comp).getBC()){ // comparing the BC value of J to teh BC value of I
-                    minI = j;
-                    comp =j;
+                    minI = j;// minumin valeuy is now at index j
+                    comp =j; // now comapring with thsi nee index's value
                 }
             }
-
+            // changing place on canvas
             int XofI = arrL.get(i).getX();
             int XofM = arrL.get(minI).getX();
             arrL.get(i).setX(XofM);
             arrL.get(minI).setX(XofI);
-            // switch min with element at i
+
+            // switch min with element at i (in array not canvas)
             Block tempMI = arrL.get(minI); // saving value at minumnet
             arrL.set(minI,arrL.get(i)); // setting cvaley at minI to teh element value at i
             arrL.set(i,tempMI); // setting teh value at i index to the minumnet element value
-
-
-
         }
+
+
+        if(usingDataTable == false){ // if im not using data tabel, updat eteh retuen value to the new index
+           for(int i =0; i < listSize; i++){
+               //resteting teh return valeu to teh now new correct index
+               arrL.get(i).setRV(i);
+           }
+        }
+
+
     }
 
 
     public void keyPressed(){
         if(key =='b'){ // start seraching
             binarySearch(grayTarget);
-
         }
 
         if(key == 'r'){ // reseting
@@ -173,7 +208,6 @@ public class Main extends PApplet {
             PAbottom = 0;
             PAtop = listSize -1;
 
-
         }
 
         if(key =='s'){
@@ -184,12 +218,17 @@ public class Main extends PApplet {
                 //System.out.println("x:" + b.getX());
             }
         }
+
+
+
+        //Implement a feature to allow the user to enter the target value via the keyboard before the search begins.
         if(Character.isDigit((key))){
             digits = digits + key;
         }else if (key =='x'){
             grayTarget = Integer.parseInt(digits);
             digits ="";
         }
+
 
     }
     public void mouseClicked(){
