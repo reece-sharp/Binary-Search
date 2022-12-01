@@ -183,7 +183,7 @@ public class Main extends PApplet {
         if(usingDataTable == false){ // if im not using data tabel, updat eteh retuen value to the new index
            for(int i =0; i < listSize; i++){
                //resteting teh return valeu to teh now new correct index
-               arrL.get(i).setRV(i);
+               arrL.get(i).setRV(i); // resetting teh RV to the new index place
            }
         }
 
