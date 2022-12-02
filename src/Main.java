@@ -7,7 +7,7 @@ import processing.data.TableRow;
 public class Main extends PApplet {
     public static PApplet pApplet;
     public static PApplet app;
-    int listSize = 13;
+    int listSize = 15;
 
     int blockSize = 50;
     int margins = 10;
@@ -20,10 +20,7 @@ public class Main extends PApplet {
     boolean usingDataTable = false;
 
     boolean infoShow = false; //whether it shows the infomaton on how to play the "game"
-    String info = "the background color is your target"+'\n'+
-            "press 's' to sort the cells; press 'b' to search the cells"+'\n'+
-            "if you want to restart, press 'r'"+'\n'+
-            "if you want a new target, type the number (0-255) and press 'x'";
+    String info;
     boolean found = false;
     boolean endOfBS = false;
     int foundIndex;
@@ -37,66 +34,86 @@ public class Main extends PApplet {
         PApplet.main("Main"); // the name of our class
     }
 
+    int widthC; // making it a global variable
     public void settings(){
         // teh first bit is teh spaces inbetween and on outside of teh blocks
-        int widthC = ((listSize+1)*margins)+(listSize)*blockSize;
-        int heightC = blockSize + (margins*4); // the height of the block all teh way to where the text would appear
-        size(widthC, heightC+150); // setting up a canvas
+        widthC = ((listSize+1)*margins)+(listSize)*blockSize;
+        int heightC = blockSize + (margins*4) +200; // the height of the block all teh way to where the text would appear
+        size(widthC, heightC); // setting up a canvas
     }
 
     public void setup() { // TO DO; CREATE IMST FOR TEH X AND Y VALES
         arrL = new ArrayList<>();
 
-/**
- * this beloe is data takes from statistics for how many indi books store there are per year in US
- */
-        Table table = loadTable("bookData.csv", "header");
-        int index = 0;
-        int xVal;
-        int yVal;
-        usingDataTable = true;
-        for (TableRow row : table.rows()) {
-            xVal = (blockSize+margins)*index + margins;
-            yVal = margins;
-            int year = row.getInt("year"); // obtain year data
-            int books = row.getInt("books"); // obtain quantity
-            arrL.add(new Block(xVal, yVal, blockSize,(year%100)*10, books));
-            index ++;
+ //this below is data takes from statistics for how many indi books store there are per year in US
+        if(usingDataTable){
+            Table table = loadTable("bookData.csv", "header");
+            int index = 0;
+            int xVal;
+            int yVal;
+
+
+            //THE NEXT THREE STATMNETS FIX THE SPACING ISSUE
+            // THAT OCCURS WHEN THE LIST SIZE IN RANDOM IS DIFFERNET THAN THE AMOUNT OF DATA IN THE TABLE
+            int aodr = 0; //amount of data rows
+            // is the same number as index but is just calulated before we instatiate each Block
+            for (TableRow row : table.rows()) {
+                aodr++;
+            }
+            //((blockSize*aodr)+((aodr-1)*margins)) is how much space teh blocks and their INTERNAL margisn take up
+            //(widthC - ((blockSize*aodr)+((aodr-1)*margins)))/2 --> how much space will be on each side of block groups left and right
+            int outsideMargMinusMarg= ((widthC - ((blockSize*aodr)+((aodr-1)*margins)))/2)-margins;
+
+
+            //thsi makes teh blcoks that hold teh data tabel info
+            for (TableRow row : table.rows()) {
+                xVal = (blockSize+margins)*index + margins + outsideMargMinusMarg;
+                yVal = margins;
+                int year = row.getInt("year"); // obtain year data
+                int books = row.getInt("books"); // obtain quantity
+                arrL.add(new Block(xVal, yVal, blockSize,(year%100)*10, books));
+                index ++;
+            }
         }
 
 
-
-/**
- * THIS BELOW IS MY RANDOM GENERATED LIST OF BLOCKS
- *//*
-        for(int i =0; i < listSize; i++){
-            // random number from 0 to 250 but in intervals of 10
-            int r = (int)(Math.random()*25);
-            int xVal = (blockSize+margins)*i + margins;
-            int yVal = margins;
-            usingDataTable = false;
-            arrL.add(new Block(xVal, yVal, blockSize, r*10,i)); // this list will be sorted 0,1,2,3, etc.
-            //baseColor = baseColor +factor;
+//THIS BELOW IS MY RANDOM GENERATED LIST OF BLOCKS
+        if(usingDataTable==false){
+            for(int i =0; i < listSize; i++){
+                // random number from 0 to 250 but in intervals of 10
+                int r = (int)(Math.random()*25);
+                int xVal = (blockSize+margins)*i + margins;
+                int yVal = margins;
+                arrL.add(new Block(xVal, yVal, blockSize, r*10,i)); // this list will be sorted 0,1,2,3, etc.
+                //baseColor = baseColor +factor;
+            }
         }
-*/
     }
 
 
     public void draw(){
         background(grayTarget);
+
         for(int i = 0; i<arrL.size();i++){
             Block b = arrL.get(i);
             b.display(); //  normally a black stroke color
-            //System.out.println(b.getBC());
         }
+
+        if(grayTarget<130){
+            fill(255);
+        }else{
+            fill(0);
+        }
+
+        if(usingDataTable==true){
+            textAlign(LEFT);
+            text("DATA: from data table", 20, height-20);
+        }else if(usingDataTable==false){
+            textAlign(LEFT);
+            text("DATA: random data", 20, height-20);
+        }
+
         if(endOfBS){
-            if(grayTarget<130){
-                fill(255);
-            }else{
-                fill(0);
-            }
-
-
             textAlign(CENTER);
             if(found){
                 text(foundIndex,width/2, blockSize + (margins*2) +10);
@@ -107,9 +124,29 @@ public class Main extends PApplet {
 
         // creating info button
         fill(255,195,0);
-        rect(width-(margins*4), height-(margins*4),20,20);
 
-        
+        rect(width-(20+10), height-(20+10),20,20);
+
+        int infoHeight = height/2;
+        if(usingDataTable==false){
+            infoHeight = height/2;
+            info = "PRESS 'u' TO GET TABLE DATA" +'\n'+
+                    "the background color is your target"+'\n'+
+                    "press 's' to sort the cells; press 'b' to search the cells"+'\n'+
+                    "if you want to restart, press 'r'"+'\n'+
+                    "if you want a new target, type the number (0-255) and press 'x'";
+
+        }else if(usingDataTable == true){
+            infoHeight = (height/2)-20;
+            info = "PRESS 'u' TO GET RANDOM DATA" +'\n'+
+                    "this visualiser contains data on the amount of independent bookstores in the U.S. from 2009-2022 (excluding 2020)"+'\n'+
+                    "each block represents a different year of data (the color is a variation on the year)"+'\n'+
+                    "first press 's' to sort the data by year"+'\n'+
+                    "then type the year of data you want to find and then press 'x'"+'\n'+
+                    "if you want to find 2015 data, type '150' then 'x'; 2009 = '90' & 'x'"+'\n'+
+                    "if you want to restart, press 'r'"+'\n'+
+                    "if you want a new target year, type in a new number and press 'x'";
+        }
         if(infoShow) {
             if(grayTarget<130){
                 fill(255);
@@ -117,11 +154,8 @@ public class Main extends PApplet {
                 fill(0);
             }
             textAlign(CENTER);
-            text(info,width/2,(height/2) +10);
-            // ADD HOW TO PLAY TEH GAME
-            // FIX ERROWRS WITH THE TEXT AND HOW IT SHOWS UP
+            text(info,width/2,infoHeight);
         }
-        //I DON'T KNOW HOW TO GET THIS TO GO AWAY
     }
 
     private int binarySearch(int gTarget){
@@ -218,6 +252,10 @@ public class Main extends PApplet {
                 //System.out.println("x:" + b.getX());
             }
         }
+        if(key=='u') {
+            usingDataTable = ! usingDataTable;
+            setup(); // call setup again so that it will recreat teh block with either table data or random stuff in them
+        }
 
 
 
@@ -232,7 +270,7 @@ public class Main extends PApplet {
 
     }
     public void mouseClicked(){
-        if(mouseX>width-(margins*4) && mouseX<width-(margins*4)+20 && mouseY > height-(margins*4) && mouseY< height-(margins*4)+20){
+        if(mouseX>width-(20+10) && mouseX<width-(20+10)+20 && mouseY > height-(20+10) && mouseY< height-(20+10)+20){
             infoShow = ! infoShow;
         }
     }
